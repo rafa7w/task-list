@@ -23,6 +23,8 @@ class _HomeState extends State<Home> {
 
   // ignore: prefer_final_fields
   List _toDoList = [];
+  late Map<String, dynamic> _lastRemoved;
+  late int _lastRemovedPos;
 
   Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -55,7 +57,7 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Widget buildItem(context, index) {
+  Widget buildItem(BuildContext context, int index) {
     return Dismissible(
       background: Container(
         color: Colors.red,
@@ -82,6 +84,30 @@ class _HomeState extends State<Home> {
           });
         },
       ),
+      onDismissed: (direction) {
+        setState(() {
+          _lastRemoved = Map.from(_toDoList[index]);
+          _lastRemovedPos = index;
+          _toDoList.removeAt(index);
+          _saveData();
+
+          final snack = SnackBar(
+            content: Text("Tarefa \"${_lastRemoved['title']}\" removida!"),
+            action: SnackBarAction(
+                label: 'Desfazer',
+                onPressed: () {
+                  setState(() {
+                    _toDoList.insert(_lastRemovedPos, _lastRemoved);
+                    _saveData();
+                  });
+                }),
+            duration: const Duration(seconds: 4),
+          );
+
+          // ignore: deprecated_member_use
+          Scaffold.of(context).showSnackBar(snack);
+        });
+      },
     );
   }
 
