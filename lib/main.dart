@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 void main() {
   runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: Home(),
   ));
 }
@@ -18,6 +19,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  // ignore: prefer_final_fields
   List _toDoList = [];
 
   Future<File> _getFile() async {
@@ -42,6 +44,57 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Lista de Tarefas'),
+        backgroundColor: Colors.blueAccent,
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(17.0, 1.0, 7.0, 1.0),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Nova Tarefa',
+                      labelStyle: TextStyle(
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                  ),
+                ),
+                // ignore: deprecated_member_use
+                RaisedButton(
+                  color: Colors.blueAccent,
+                  child: const Text('ADD'),
+                  textColor: Colors.white,
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(top: 10.0),
+              itemCount: _toDoList.length,
+              itemBuilder: (context, index) {
+                return CheckboxListTile(
+                  title: Text(_toDoList[index]['title']),
+                  value: _toDoList[index]['ok'],
+                  secondary: CircleAvatar(
+                    child: Icon(
+                        _toDoList[index]['ok'] ? Icons.check : Icons.error),
+                  ),
+                  onChanged: (bool? value) {},
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
