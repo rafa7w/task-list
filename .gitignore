@@ -54,3 +54,5 @@ app.*.map.json
 /test/
 analysis_options.yaml
 .metadata
+.flutter-plugins
+.flutter-plugins-dependencies
