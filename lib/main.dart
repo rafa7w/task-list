@@ -127,6 +127,8 @@ class _HomeState extends State<Home> {
           );
 
           // ignore: deprecated_member_use
+          Scaffold.of(context).removeCurrentSnackBar();
+          // ignore: deprecated_member_use
           Scaffold.of(context).showSnackBar(snack);
         });
       },
