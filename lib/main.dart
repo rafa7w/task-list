@@ -57,6 +57,28 @@ class _HomeState extends State<Home> {
     });
   }
 
+  Future<void> _refresh() async {
+    await Future.delayed(
+      const Duration(seconds: 1),
+    );
+
+    setState(() {
+      _toDoList.sort((a, b) {
+        if (a['ok'] && !b['ok']) {
+          return 1;
+        } else if (!a['ok'] && b['ok']) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+
+      _saveData();
+    });
+    // ignore: avoid_returning_null_for_void
+    return null;
+  }
+
   Widget buildItem(BuildContext context, int index) {
     return Dismissible(
       background: Container(
@@ -157,10 +179,13 @@ class _HomeState extends State<Home> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(top: 10.0),
-              itemCount: _toDoList.length,
-              itemBuilder: buildItem,
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              child: ListView.builder(
+                padding: const EdgeInsets.only(top: 10.0),
+                itemCount: _toDoList.length,
+                itemBuilder: buildItem,
+              ),
             ),
           ),
         ],
